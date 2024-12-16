@@ -26,13 +26,13 @@ jobs:
           # Generar par de claves SSH
           ssh-keygen -t rsa -b 2048 -f ./ec2-key -N ""
 
+          # Limpieza y conversión del archivo .pub a Base64 para asegurar compatibilidad
+          PUB_KEY=$(cat ./ec2-key.pub | awk '{print $1" "$2" "$3}')
+
           # Importar clave pública a AWS
           aws ec2 import-key-pair \
             --key-name pwddesafio1 \
-            --public-key-material file://./ec2-key.pub
-
-          # Guardar clave privada como secreto en GitHub (opcional pero recomendado)
-          echo "$(<./ec2-key)" | gh secret set EC2_PRIVATE_KEY
+            --public-key-material "$PUB_KEY"
 
       - name: Crear instancia EC2
         run: |
