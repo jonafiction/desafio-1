@@ -21,24 +21,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Generar Clave SSH
-        run: |
-          # Generar par de claves SSH
-          ssh-keygen -t rsa -b 2048 -f ./ec2-key -N ""
-
-          # Limpiar y convertir el contenido de la clave pública
-          PUB_KEY=$(awk '{print $1" "$2}' ./ec2-key.pub)
-
-          # Importar la clave pública a AWS
-          aws ec2 import-key-pair \
-            --key-name pwddesafio1 \
-            --public-key-material "$PUB_KEY"
-
       - name: Crear instancia EC2
         run: |
           aws ec2 run-instances \
             --image-id ami-0166fe664262f664c \
             --count 1 \
             --instance-type t2.micro \
-            --key-name pwddesafio1 \
             --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=InstanciaDesafio1}]'
