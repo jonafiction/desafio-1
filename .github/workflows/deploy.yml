@@ -21,15 +21,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Crear instancia EC2
-        run: |
-          aws ec2 run-instances \
-            --image-id ami-0166fe664262f664c \
-            --count 1 \
-            --instance-type t2.micro \
-            --key-name pwddesafio1 \
-            --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=InstanciaDesafio1}]'
-
       - name: Generar Clave SSH
         run: |
           # Generar par de claves SSH
@@ -42,3 +33,12 @@ jobs:
 
           # Guardar clave privada como secreto en GitHub (opcional pero recomendado)
           echo "$(<./ec2-key)" | gh secret set EC2_PRIVATE_KEY
+
+      - name: Crear instancia EC2
+        run: |
+          aws ec2 run-instances \
+            --image-id ami-0166fe664262f664c \
+            --count 1 \
+            --instance-type t2.micro \
+            --key-name pwddesafio1 \
+            --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=InstanciaDesafio1}]'
